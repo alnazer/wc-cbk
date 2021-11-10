@@ -16,14 +16,14 @@ download and unzip to plugins folder
 or
 From merchant’s WordPress admin
 1. Go to plugin section-> Add new
-2. Search for “Payment Gateway for knet on WooCommerce”
+2. Search for “CBK Payment Gateway for knet on WooCommerce”
 3. Click on Install Now
 4. Click on Activate
 
 
 ## Usage
 
-go to woocommerce setting in side menu and select tab payment and active knet v2 from list
+go to woocommerce setting in side menu and select tab payment and active Cbk via Knet from list
 
 ## License
 

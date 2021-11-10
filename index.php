@@ -175,7 +175,7 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
             {
                 $this->id = 'cbk_knet';
                 $this->icon = plugins_url('assets/knet-logo.png', __FILE__);
-                $this->method_title = __('Knet', 'cbk_knet');
+                $this->method_title = __('Cbk via Knet', 'cbk_knet');
                 $this->method_description = __('intgration with knet php raw.', 'woocommerce');
                 $this->has_fields = true;
             }
