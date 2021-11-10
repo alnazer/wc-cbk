@@ -108,13 +108,14 @@ if (!defined('ABSPATH')) {
                     return $available_gateways;
                 }
                 if($this->is_test == "yes"){
+                    $available_gateways[$this->id]->title= $available_gateways[$this->id]->title. " <b style=\"color:red\">" .__("Test Mode","wc_knet")."</b>";
                     $wp_get_current_user = wp_get_current_user();
                     if(isset($wp_get_current_user)){
-
                         if(!in_array("shop_manager",$wp_get_current_user->roles) && !in_array("administrator",$wp_get_current_user->roles)){
                             unset($available_gateways[$this->id]);
                         }
                     }
+
                 }
                 return $available_gateways;
             }
