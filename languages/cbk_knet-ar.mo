@@ -34,6 +34,10 @@ msgstr "البنك التجاري بدعم كي نت"
 msgid "Knet can't get data"
 msgstr ""
 
+#: index.php:167
+msgid "intgration with CBK (Al-Tijari) via knet."
+msgstr ""
+
 #: index.php:281
 msgid "Order not found"
 msgstr "لم يتم العثور علي الطب"
