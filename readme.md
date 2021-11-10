@@ -7,9 +7,9 @@ Requires PHP: 7.0
 Stable tag: 1.0.1
 License: MIT
 License URI: https://choosealicense.com/licenses/mit/
-
+الي كل عملاء البنك التجاري
 نساعدك في تطوير اعمالك الخاصه بتقديم الاضافة الجديد
-الخاصة بالدفع عن طريق بوابة الكي نت بعد تحديثها 
+الخاصة بالدفع عن طريق بوابة الكي نت   
 وسع دائرة عملائك باتاحة امكانية الدفع عن طريق الكي نت
 ==========
 We help you to develop your business by introducing the new add-on
