@@ -1,17 +1,10 @@
-=== Payment Gateway for knet on WooCommerce ===
-Contributors: hassan
-Tags: K-Net, knet, knetv2, payment, kuwait, woocommerce , ecommerce, payment ,gateway
-Tested up to: 5.7
-Tested in WooCommerce : 5.1
-Requires PHP: 7.0
-Stable tag: 1.0.1
-License: MIT
-License URI: https://choosealicense.com/licenses/mit/
+## Payment Gateway for knet on WooCommerce  
+
 الي كل عملاء البنك التجاري
 نساعدك في تطوير اعمالك الخاصه بتقديم الاضافة الجديد
 الخاصة بالدفع عن طريق بوابة الكي نت   
 وسع دائرة عملائك باتاحة امكانية الدفع عن طريق الكي نت
-==========
+#
 We help you to develop your business by introducing the new add-on
 For payment through the K-Net portal, after it has been updated
 Expand your customers' circle by making the payment available via Knet 
@@ -34,4 +27,4 @@ go to woocommerce setting in side menu and select tab payment and active knet v2
 
 ## License
 
-[GPLv3](https://choosealicense.com/licenses/agpl-3.0/)
+[MIT](https://choosealicense.com/licenses/mit/)
