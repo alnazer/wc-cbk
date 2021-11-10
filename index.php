@@ -99,13 +99,33 @@ if (!defined('ABSPATH')) {
                 add_action("woocommerce_order_details_before_order_table", [$this,'cbk_knet_details'],10,1);
                 // add details to email
                 add_action("woocommerce_email_after_order_table", [$this,'cbk_knet_email_details'],10,3);
-            }
 
+                add_filter('woocommerce_available_payment_gateways', [$this,'cbk_conditional_payment_gateways'], 10, 1);
+            }
+            public  function  cbk_conditional_payment_gateways($available_gateways){
+
+                if(is_admin()){
+                    return $available_gateways;
+                }
+                if($this->is_test == "yes"){
+                    $wp_get_current_user = wp_get_current_user();
+                    if(isset($wp_get_current_user)){
+
+                        if(!in_array("shop_manager",$wp_get_current_user->roles) && !in_array("administrator",$wp_get_current_user->roles)){
+                            unset($available_gateways[$this->id]);
+                        }
+                    }
+                }
+                return $available_gateways;
+            }
             /**
              * @param $order
              */
             public function cbk_knet_details($order){
-                $knet_details = wc_get_transation_by_orderid($order->get_id());
+                if($order->get_payment_method() != $this->id) {
+                    return;
+                }
+                $knet_details = cbk_get_transation_by_orderid($order->get_id());
 
                 if(!$knet_details){
                     return;
@@ -121,16 +141,21 @@ if (!defined('ABSPATH')) {
              * @param $text_plan
              */
             public function cbk_knet_email_details($order,$is_admin,$text_plan){
-                $knet_details = wc_get_transation_by_orderid($order->get_id());
-                if(!$knet_details){
+                if($order->get_payment_method() != $this->id) {
                     return;
                 }
-                if($text_plan){
-                    $output = $this->format_email($order,$knet_details,"emails/knet-text-details.html");
-                }else{
-                    $output = $this->format_email($order,$knet_details,"emails/knet-html-details.html");
+                $knet_details = cbk_get_transation_by_orderid($order->get_id());
+
+                if (!$knet_details) {
+                    return;
+                }
+                if ($text_plan) {
+                    $output = $this->format_email($order, $knet_details, "emails/knet-text-details.html");
+                } else {
+                    $output = $this->format_email($order, $knet_details, "emails/knet-html-details.html");
                 }
                 echo $output;
+
             }
 
             /**
@@ -141,6 +166,7 @@ if (!defined('ABSPATH')) {
              */
             private function format_email($order,$knet_detials,$template="knet-details.html")
             {
+
                 $template = file_get_contents(plugin_dir_path(__FILE__).$template);
                 $replace = [
                     "{icon}"=> plugin_dir_url(__FILE__)."assets/knet-logo.png",
@@ -150,7 +176,7 @@ if (!defined('ABSPATH')) {
                     "{amount}" => ($knet_detials->amount) ? $knet_detials->amount : "---",
                     "{tran_id}" => ($knet_detials->tran_id) ? $knet_detials->tran_id : "---",
                     "{ref_id}" => ($knet_detials->ref_id) ? $knet_detials->ref_id : "---",
-                    "{pay_id}" => ($knet_detials->ref_id) ? $knet_detials->pay_id : "---",
+                    "{pay_id}" => ($knet_detials->pay_id) ? $knet_detials->pay_id : "---",
                     "{created_at}" => ($knet_detials->created_at) ? wp_date("F j, Y g:i a", strtotime($knet_detials->created_at) ) : "---",
                     "{result}" => sprintf("<b><span style=\"color:%s\">%s</span></b>", $this->get_status_color($order->get_status()), $knet_detials->result),
                 ];
@@ -682,16 +708,7 @@ if (!defined('ABSPATH')) {
     function woocommerce_add_cbk_knet_gateway($methods)
     {
         global $CBK_KNET_CLASS_NAME;
-        $cbk_method = new CBK_Gateway_Knet();
-        if($cbk_method->is_test == "yes"){
-            $wp_get_current_user = wp_get_current_user();
-            if(isset($wp_get_current_user) && (in_array("administrator",$wp_get_current_user->roles) || in_array("shop_manager",$wp_get_current_user->roles))){
-                $methods[] = $CBK_KNET_CLASS_NAME;
-            }
-        }else{
-            $methods[] = $CBK_KNET_CLASS_NAME;
-        }
-
+        $methods[] = $CBK_KNET_CLASS_NAME;
         return $methods;
     }
 
