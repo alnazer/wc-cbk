@@ -2,8 +2,8 @@
 /*
 *Plugin Name: CBK Payment Gateway for knet on WooCommerce
 *Plugin URI: https://github.com/alnazer/woocommerce-payment-kent-v2
-*Description: The new update of the CBK Payment gateway via woocommerce paymemt.
-*Author: Hassan
+*Description: The new update of the CBK (Al-Tijari) Payment gateway via woocommerce paymemt.
+*Author: Hassan - hassanaliksa@gmail.com - +96590033807
 *Version: 1.0.0
 *Author URI: https://github.com/alnazer
 *Text Domain: cbk_knet
@@ -175,7 +175,7 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
             {
                 $this->id = 'cbk_knet';
                 $this->icon = plugins_url('assets/knet-logo.png', __FILE__);
-                $this->method_title = __('Cbk via Knet', 'cbk_knet');
+                $this->method_title = __('CBK (Al-Tijari) via Knet', 'cbk_knet');
                 $this->method_description = __('intgration with knet php raw.', 'woocommerce');
                 $this->has_fields = true;
             }

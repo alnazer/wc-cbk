@@ -27,7 +27,7 @@ msgid "Necessary data requested from the bank "
 msgstr "بيانات ضرورية تطلب من البنك"
 
 #: index.php:126
-msgid "Cbk via Knet"
+msgid "CBK (Al-Tijari) via Knet"
 msgstr "البنك التجاري بدعم كي نت"
 
 #: index.php:167
