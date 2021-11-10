@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     // include transactions table
     require_once plugin_dir_path(__FILE__)."transactions.php";
     require_once plugin_dir_path(__FILE__)."cbk_knet_trans_grid.php";
-require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
+    require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
 
     // initialization payment class when plugin load
     $CBK_KNET_CLASS_NAME = 'CBK_Gateway_Knet';
@@ -51,6 +51,8 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
          */
         class CBK_Gateway_Knet extends WC_Payment_Gateway
         {
+            public $is_test;
+            public $client_allow_test;
             public $client_id;
             public $client_secret;
             public $encrp_key;
@@ -64,9 +66,6 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
             public $email = '';
             public $mobile = '';
             public $user_id = '';
-            private $trackId;
-            private $responseURL;
-            private $errorURL;
             private $error;
 
             public function __construct()
@@ -82,6 +81,7 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
                 $this->client_secret = $this->get_option('client_secret');
                 $this->encrp_key = $this->get_option('encrp_key');
                 $this->is_test = $this->get_option('is_test');
+                $this->client_allow_test = $this->get_option('client_allow_test');
                 if ($this->is_test == 'no') {
                     $this->GatewayUrl = 'https://pg.cbk.com';
                 }
@@ -101,6 +101,9 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
                 add_action("woocommerce_email_after_order_table", [$this,'cbk_knet_email_details'],10,3);
             }
 
+            /**
+             * @param $order
+             */
             public function cbk_knet_details($order){
                 $knet_details = wc_get_transation_by_orderid($order->get_id());
 
@@ -111,6 +114,12 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
                 echo $output;
 
             }
+
+            /**
+             * @param $order
+             * @param $is_admin
+             * @param $text_plan
+             */
             public function cbk_knet_email_details($order,$is_admin,$text_plan){
                 $knet_details = wc_get_transation_by_orderid($order->get_id());
                 if(!$knet_details){
@@ -124,6 +133,12 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
                 echo $output;
             }
 
+            /**
+             * @param $order
+             * @param $knet_detials
+             * @param string $template
+             * @return mixed
+             */
             private function format_email($order,$knet_detials,$template="knet-details.html")
             {
                 $template = file_get_contents(plugin_dir_path(__FILE__).$template);
@@ -153,6 +168,10 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
                 $replace = array_merge($replace, $replace_lang);
                 return str_replace(array_keys($replace), array_values($replace), $template);
             }
+
+            /**
+             * inti user informatio
+             */
             function initUserInformation(){
                 $current_user = wp_get_current_user();
                 if($current_user){
@@ -197,16 +216,16 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
                         'title' => 'Test mode',
                         'label' => 'Enable Test Mode',
                         'type' => 'checkbox',
-                        'description' => 'Place the payment gateway in test mode using test API keys.',
+                        'description' => __('Place the payment gateway in test mode using test API keys. only this user roles [Shop manager,Administrator] can test payment',"cbk_knet"),
                         'default' => 'no',
-                        'desc_tip' => true,
+                        'desc_tip' => false,
                     ],
                     'title' => [
                         'title' => __('Title', 'woocommerce'),
                         'type' => 'text',
                         'description' => __('This controls the title which the user sees during checkout.', 'woocommerce'),
                         'default' => __('knet', 'woocommerce'),
-                        'desc_tip' => true,
+                        'desc_tip' => false,
                     ],
                     'description' => [
                             'title' => __('Description', 'woocommerce'),
@@ -224,14 +243,14 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
                         'type' => 'password',
                         'description' => __('Necessary data requested from the bank ', 'cbk_knet'),
                         'default' => '',
-                        'desc_tip' => true,
+                        'desc_tip' => false,
                     ],
                     'encrp_key' => [
                         'title' => __('Terminal Resource Key', 'cbk_knet'),
                         'type' => 'password',
                         'description' => __('Necessary data requested from the bank', 'cbk_knet'),
                         'default' => '',
-                        'desc_tip' => true,
+                        'desc_tip' => false,
                     ],
                     'lang' => [
                         'title' => __('Language', 'cbk_knet'),
@@ -242,7 +261,7 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
                             'ar' => __('Arabic'),
                             'en' => __('English'),
                         ],
-                        'desc_tip' => true,
+                        'desc_tip' => false,
                     ],
                 ];
             }
@@ -663,7 +682,15 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
     function woocommerce_add_cbk_knet_gateway($methods)
     {
         global $CBK_KNET_CLASS_NAME;
-        $methods[] = $CBK_KNET_CLASS_NAME;
+        $cbk_method = new CBK_Gateway_Knet();
+        if($cbk_method->is_test == "yes"){
+            $wp_get_current_user = wp_get_current_user();
+            if(isset($wp_get_current_user) && (in_array("administrator",$wp_get_current_user->roles) || in_array("shop_manager",$wp_get_current_user->roles))){
+                $methods[] = $CBK_KNET_CLASS_NAME;
+            }
+        }else{
+            $methods[] = $CBK_KNET_CLASS_NAME;
+        }
 
         return $methods;
     }
@@ -808,8 +835,8 @@ require_once plugin_dir_path(__FILE__)."classes/SimpleXLSXGen.php";
         }
     }
 
-    if(!function_exists("pr")){
-        function dd($data){
+    if(!function_exists("dd")){
+        function dd(...$data){
             echo "<pre>";
             print_r($data);
             echo "</pre>";
