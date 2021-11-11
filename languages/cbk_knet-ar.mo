@@ -126,3 +126,12 @@ msgstr "العملاء الذين يمكنهم اختبار البوابة"
 msgid "Place the payment gateway in test mode using test API keys. only this user roles [Shop manager,Administrator] can test payment"
 msgstr "ضع بوابة الدفع في وضع الاختبار باستخدام مفاتيح اختبار API. يمكن لأدوار هذا المستخدم فقط [مدير متجر ، مدير] اختبار الدفع "
 
+msgid "You are being taken to the payment page..."
+msgstr "جاري عملية نقلك الي صفحة الدفع ..."
+
+msgid "Do not refresh the page"
+msgstr "لا تقم بعمل تحديث للصفحة"
+
+msgid "or Click here"
+msgstr "او اضغط هنا"
+

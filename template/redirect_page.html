@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{title}</title>
+</head>
+<body>
+    <div style='font-size:2rem;direction:rtl;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);text-align:center'>
+        {logo}
+        <div><div class="loader"></div></div>
+        {text1}
+        <br>
+        <b>{text2}</b>
+        <form id='pgForm' method='post' action='{action}' enctype='application/x-www-form-urlencoded'>
+            {hidden_inputs}
+            <button type="submit" class="btn btn-dark">{submit_text}</button>
+        </form>
+    </div>
+
+    <script type='text/javascript'>
+        document.getElementById('pgForm').submit();
+    </script>
+    <style>
+        .btn {
+            display: inline-block;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            background-color: transparent;
+            border: 1px solid transparent;
+            border-top-color: transparent;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            border-left-color: transparent;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            border-radius: .25rem;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        .btn-dark {
+            color: #fff;
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .btn-dark:hover {
+            color: #fff;
+            background-color: #1c1f23;
+            border-color: #1a1e21;
+        }
+        .loader {
+            margin: auto;
+            border: 10px solid #f3f3f3; /* Light grey */
+            border-top: 10px solid #b8b6b6; /* gray */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>

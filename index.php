@@ -131,7 +131,7 @@ if (!defined('ABSPATH')) {
                 if(!$knet_details){
                     return;
                 }
-                $output = $this->format_email($order,$knet_details,"knet-details.html");
+                $output = $this->format_email($order,$knet_details,"templates/knet-details.html");
                 echo $output;
 
             }
@@ -165,7 +165,7 @@ if (!defined('ABSPATH')) {
              * @param string $template
              * @return mixed
              */
-            private function format_email($order,$knet_detials,$template="knet-details.html")
+            private function format_email($order,$knet_detials,$template="templates/knet-details.html")
             {
 
                 $template = file_get_contents(plugin_dir_path(__FILE__).$template);
@@ -783,19 +783,22 @@ if (!defined('ABSPATH')) {
                 'tij_MerchPayType' => 1,
                 'tij_MerchReturnUrl' =>  get_site_url()."/index.php",
             ];
-   
-
-            $form = "<form id='pgForm' method='post' action='$CBK_Gateway_Knet->request_url$CBK_Gateway_Knet->access_token' enctype='application/x-www-form-urlencoded'>";
+            $inputs = "";
             foreach ($postdata as $k => $v) {
-                $form .= "<input type='hidden' name='$k' value='$v'>";
+                $inputs .= "<input type='hidden' name='$k' value='$v'>";
             }
-            $form .= '</form>';
-           
-            $form .= "<div style='position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);text-align:center'>جاري عملية نقلك الي صفحة الدفع ... <br> <b> لا تقم بعمل تحديث للصفحة</b></div>";
-            $form .= "<script type='text/javascript'>";
-            $form .= "document.getElementById('pgForm').submit();";
-            $form .= '</script>';
-            echo $form;
+            $replace_vars = [
+                "{action}" => $CBK_Gateway_Knet->request_url.$CBK_Gateway_Knet->access_token,
+                "{title}" => get_bloginfo("title"),
+                "{hidden_inputs}"=>$inputs,
+                "{logo}"=> sprintf("<img src='%s' width='110px' />",plugin_dir_url(__FILE__)."assets/knet-logo.png"),
+                "{text1}" => __("You are being taken to the payment page...","cbk_knet"),
+                "{text2}" => __("You are being taken to the payment page...","cbk_knet"),
+                "{submit_text}" => __("or Click here","cbk_knet"),
+            ];
+            $template = file_get_contents(plugin_dir_path(__FILE__)."templates/redirect_page.html");
+            $template = str_replace(array_keys($replace_vars),array_values($replace_vars),$template);
+            echo $template;
             die;
         }
     });
