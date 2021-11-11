@@ -715,17 +715,23 @@ if (!defined('ABSPATH')) {
 
     add_filter('woocommerce_payment_gateways', 'woocommerce_add_cbk_knet_gateway');
 
-    function cbk_knet_load_languages_textdomain($mofile, $domain)
-    {
-        if ('cbk_knet' === $domain && false !== strpos($mofile, WP_LANG_DIR.'/plugins/')) {
-            $locale = apply_filters('plugin_locale', determine_locale(), $domain);
-            $mofile = WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/languages/'.$domain.'-'.$locale.'.mo';
+        function my_plugin_load_my_own_textdomain( $mofile, $domain ) {
+
+            if ( 'cbk_knet' === $domain && false !== strpos( $mofile, WP_LANG_DIR . '/plugins/' ) ) {
+
+                $locale = apply_filters( 'plugin_locale', determine_locale(), $domain );
+                $mofile = WP_PLUGIN_DIR . '/' . dirname( plugin_basename( __FILE__ ) ) . '/languages/' . $domain . '-' . $locale . '.mo';
+            }
+            return $mofile;
         }
+        add_filter( 'load_textdomain_mofile', 'my_plugin_load_my_own_textdomain', 10, 2 );
 
-        return $mofile;
-    }
-    add_filter('load_textdomain_mofile', 'cbk_knet_load_languages_textdomain', 10, 2);
 
+        add_action( 'init', 'wpdocs_load_textdomain' );
+
+        function wpdocs_load_textdomain() {
+            load_plugin_textdomain( 'cbk_knet', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+        }
     /*
      * add knet responce query var
      */
