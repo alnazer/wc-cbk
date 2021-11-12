@@ -10,8 +10,9 @@
 * Domain Path: /languages
 */
 /*
- * @package cbk knet woocommerce
+ * @package cbk_knet
 */
+
 if (!defined('ABSPATH')) {
     exit();
 }
@@ -56,6 +57,8 @@ if (!defined('ABSPATH')) {
             public $client_id;
             public $client_secret;
             public $encrp_key;
+            public $currency;
+            public $exchange;
             public $GatewayUrl = 'https://pgtest.cbk.com';
             private $auth_url = '';
             public $request_url = '';
@@ -74,10 +77,12 @@ if (!defined('ABSPATH')) {
                 $this->init_form_fields();
                 $this->init_settings();
                 $this->initUserInformation();
+                $this->currency = get_option('woocommerce_currency');
                 $this->title = $this->get_option('title');
                 $this->lang = $this->get_option('lang');
                 $this->description = $this->get_option('description');
                 $this->client_id = $this->get_option('client_id');
+                $this->exchange = $this->get_option('exchange');
                 $this->client_secret = $this->get_option('client_secret');
                 $this->encrp_key = $this->get_option('encrp_key');
                 $this->is_test = $this->get_option('is_test');
@@ -93,8 +98,6 @@ if (!defined('ABSPATH')) {
                 add_action('woocommerce_update_options_payment_gateways_'.$this->id, [$this, 'process_admin_options']);
                 add_filter('woocommerce_thankyou_order_received_text', [$this,'cbk_woo_change_order_received_text'] );
                 add_filter( 'woocommerce_endpoint_order-received_title', [$this,'cbk_thank_you_title']);
-                add_action("cbk_knet_create_new_transation",[$this,'do_cbk_knet_create_new_transation',10,2]);
-
                 // add details to tahnkyou page
                 add_action("woocommerce_order_details_before_order_table", [$this,'cbk_knet_details'],10,1);
                 // add details to email
@@ -178,7 +181,7 @@ if (!defined('ABSPATH')) {
                     "{tran_id}" => ($knet_detials->tran_id) ? $knet_detials->tran_id : "---",
                     "{ref_id}" => ($knet_detials->ref_id) ? $knet_detials->ref_id : "---",
                     "{pay_id}" => ($knet_detials->pay_id) ? $knet_detials->pay_id : "---",
-                    "{created_at}" => ($knet_detials->created_at) ? wp_date("F j, Y g:i a", strtotime($knet_detials->created_at) ) : "---",
+                    "{created_at}" => ($knet_detials->created_at) ? wp_date("F j, Y", strtotime($knet_detials->created_at) ) : "---",
                     "{result}" => sprintf("<b><span style=\"color:%s\">%s</span></b>", $this->get_status_color($order->get_status()), $knet_detials->result),
                 ];
                 $replace_lang = [
@@ -259,16 +262,24 @@ if (!defined('ABSPATH')) {
                             'type' => 'textarea',
                             'default' => '',
                     ],
+                    'exchange' => [
+                        'title' => __('Currency exchange rate ', 'cbk_knet'),
+                        'type' => 'number',
+                        'custom_attributes' => array( 'step' => 'any', 'min' => '0' ),
+                        'description' => __('It is the rate of multiplying the currency account in the event that the base currency of the store is not the Kuwaiti dinar', 'cbk_knet')." ".__('KWD = exchange rate * amount(USD)', 'cbk_knet'),
+                        'default' => 1,
+                        'desc_tip' => false,
+                    ],
                     'client_id' => [
                         'title' => __('client Id', 'cbk_knet'),
                         'type' => 'text',
-                        'label' => __('Necessary data requested from the bank ', 'cbk_knet'),
+                        'description' => __('Necessary data requested from the bank', 'cbk_knet'),
                         'default' => '',
                     ],
                     'client_secret' => [
                         'title' => __('Transportal client_secret', 'cbk_knet'),
                         'type' => 'password',
-                        'description' => __('Necessary data requested from the bank ', 'cbk_knet'),
+                        'description' => __('Necessary data requested from the bank', 'cbk_knet'),
                         'default' => '',
                         'desc_tip' => false,
                     ],
@@ -381,7 +392,15 @@ if (!defined('ABSPATH')) {
                     'url' => get_site_url().'/index.php?cbk_knetredirect='.$order->get_id(),
                 ];
             }
+            public function getTotalAmount($order){
+               if($this->currency == "KWD"){
+                    return $order->get_total();
+               }elseif(!empty($this->exchange) && $this->exchange > 0){
+                   return $order->get_total()*$this->exchange;
+               }
+                return $order->get_total();
 
+            }
             /**
              * update order after responce Done from knet
              * return string
@@ -424,14 +443,15 @@ if (!defined('ABSPATH')) {
                         "ref_id"=>$ref,
                         "pay_id"=>$PayId,
                         "result"=>$result,
-                        "amount"=> (iset($order->get_total()))? $order->get_total() : 0,
-                        'status' => ($result == "CAPTURED") ? CBK_STATUS_SUCCESS : CBK_STATUS_FAIL,
+                        "amount"=> $this->getTotalAmount($order),
+                        'status' => (strtolower($result) == "success") ? CBK_STATUS_SUCCESS : CBK_STATUS_FAIL,
                         "data" => json_encode($resnopseData),
                     ];
                     if (!$order->get_id()) {
                         wc_add_notice(__('Order not found', 'cbk_knet'), 'error');
                         return $order->get_view_order_url();
                     } elseif (isset($status) && $status == 1) {
+
                         do_action("cbk_knet_create_new_transation",$order,$transation_data);
                         $knetInfomation = '';
                         $knetInfomation .= __('Result', 'cbk_knet')."           : $result\n";
@@ -586,38 +606,7 @@ if (!defined('ABSPATH')) {
                 return false;
             }
 
-            /**
-             * @param $order
-             * @param $data
-             * @return bool|false|int
-             */
-            private function do_cbk_knet_create_new_transation($order,$data){
-                global $wpdb;
-                $table_name = $wpdb->prefix.CBK_KNET_TABLE;
-                try {
-                    if(!cbk_is_transation_exsite($data["payment_id"])){
-                        return $wpdb->insert(
-                            $table_name,
-                            [
-                                'order_id' => $order->get_id(),
-                                'payment_id' => $data["payment_id"],
-                                'track_id' => $data["track_id"],
-                                'tran_id' => $data["tran_id"],
-                                'ref_id' => $data["ref_id"],
-                                'pay_id' => $data["pay_id"],
-                                'status' => $data["status"],
-                                'result' => $data["result"],
-                                'amount'=>$data["amount"],
-                                'info' => json_encode($data),
-                                'created_at' => current_time( 'mysql' ),
-                            ]
-                        );
-                    }
-                    return false;
-                }catch (Exception $e){
-                    return false;
-                }
-            }
+
 
             /**
              * @return bool
@@ -778,7 +767,7 @@ if (!defined('ABSPATH')) {
                 'tij_MerchantEncryptCode' => $CBK_Gateway_Knet->encrp_key,
                 'tij_MerchAuthKeyApi' => $CBK_Gateway_Knet->access_token,
                 'tij_MerchantPaymentLang' => $CBK_Gateway_Knet->lang,
-                'tij_MerchantPaymentAmount' => $order->get_total(),
+                'tij_MerchantPaymentAmount' => $CBK_Gateway_Knet->getTotalAmount($order),
                 'tij_MerchantPaymentTrack' => uniqid(),
                 'tij_MerchantPaymentRef' => date('YmdHis').rand(1, 1000),
                 'tij_MerchantUdf1' => "",

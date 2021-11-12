@@ -58,7 +58,7 @@ class cbk_knet_trans_grid extends WP_List_Table
         }
         if(isset($_REQUEST["pay_id"]) && !empty($_REQUEST["pay_id"])){
             $pay_id = sanitize_text_field($_REQUEST["pay_id"]);
-            $query .=" AND `pay_id` = $pay_id";
+            $query .=" AND `pay_id` = '$pay_id'";
         }
         if(isset($_REQUEST["created_at"]) && !empty($_REQUEST["created_at"])){
             $created_at = sanitize_text_field($_REQUEST["created_at"]);
@@ -228,7 +228,7 @@ class cbk_knet_trans_grid extends WP_List_Table
         /** Process bulk action */
         $this->process_bulk_action();
 
-        $per_page = $this->get_items_per_page( 'trans_per_page', 5 );
+        $per_page = $this->get_items_per_page( 'trans_per_page', 20 );
         $current_page = $this->get_pagenum();
         $total_items = self::record_count();
 
@@ -237,7 +237,7 @@ class cbk_knet_trans_grid extends WP_List_Table
             'per_page' => $per_page //WE have to determine how many items to show on a page
         ] );
 
-        $this->items = self::get_transations( $per_page = 5, $page_number = 1 );
+        $this->items = self::get_transations( $per_page, $current_page );
     }
     /**
      * Returns the count of records in the database.
@@ -256,6 +256,8 @@ class cbk_knet_trans_grid extends WP_List_Table
         if ( ! empty( $_REQUEST['orderby'] ) ) {
             $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
             $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
+        }else{
+            $sql .= " ORDER BY `id` DESC ";
         }
 
         $sql .= " LIMIT $per_page";
@@ -303,7 +305,7 @@ class CBK_KNET_Plugin
         $option = 'per_page';
         $args = [
             'label' => 'Transations count',
-            'default' => 5,
+            'default' => 20,
             'option' => 'trans_per_page'
         ];
 
@@ -315,8 +317,8 @@ class CBK_KNET_Plugin
 
         $hook =add_submenu_page(
             'woocommerce',
-            __( 'Cbk Knet transactions', 'cbk_knet' ),
-            __( 'Cbk Knet transactions', 'cbk_knet' ),
+            __( '(Al-Tijari) KNET transactions', 'cbk_knet' ),
+            __( '(Al-Tijari) KNET transactions', 'cbk_knet' ),
             'manage_woocommerce',
             "cbk-knet-transactions",
             [ $this, 'plugin_settings_page' ],
@@ -332,7 +334,7 @@ class CBK_KNET_Plugin
     public function plugin_settings_page() {
         ?>
         <div class="wrap">
-            <h2><?php echo __( 'Cbk Knet transactions', 'cbk_knet' ) ?></h2>
+            <h2><?php echo __( '(Al-Tijari) KNET transactions', 'cbk_knet' ) ?></h2>
 
             <div style="display: flex;gap: 3rem;">
 
@@ -348,7 +350,7 @@ class CBK_KNET_Plugin
                     </div>
                 </div>
                 <div id="post-body" class="metabox-holder columns-2">
-                    <?php $this->transations_obj->search_box(_e( 'Filter', 'cbk_knet' ), "cbk_knet_filter") ?>
+                    <?php $this->transations_obj->search_box(__( 'Filter', 'cbk_knet' ), "cbk_knet_filter") ?>
                 </div>
             </div>
         </div>

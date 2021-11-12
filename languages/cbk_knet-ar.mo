@@ -7,7 +7,7 @@ msgid "Tranportal Id"
 msgstr "Tranportal Id"
 
 #: index.php:101
-msgid "Necessary data requested from the bank "
+msgid "Necessary data requested from the bank"
 msgstr "بيانات ضرورية تطلب من البنك"
 
 #: index.php:105
@@ -15,15 +15,24 @@ msgid "Transportal Password"
 msgstr ""
 
 #: index.php:107
-msgid "Necessary data requested from the bank "
+msgid "Necessary data requested from the bank"
 msgstr "بيانات ضرورية تطلب من البنك"
+
+
+#: index.php:112
+msgid "Currency exchange rate"
+msgstr "معدل تغيير العملة"
+
+
+msgid "It is the rate of multiplying the currency account in the event that the base currency of the store is not the Kuwaiti dinar"
+msgstr "هو معدل ضرب حساب العملة في حالة لم تكن العملة الاساسية للمتجر الدينار الكويتي"
 
 #: index.php:112
 msgid "Terminal Resource Key"
 msgstr ""
 
 #: index.php:114
-msgid "Necessary data requested from the bank "
+msgid "Necessary data requested from the bank"
 msgstr "بيانات ضرورية تطلب من البنك"
 
 #: index.php:126
@@ -66,7 +75,7 @@ msgstr "فشلت"
 msgid "success"
 msgstr "نجحت"
 
-msgid "Knet transactions"
+msgid "(Al-Tijari) KNET transactions"
 msgstr "عمليت الكي نت"
 
 msgid "Filter"

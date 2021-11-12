@@ -98,3 +98,39 @@ function cbk_get_transation_by_orderid($order_id){
     $table_name = $wpdb->prefix.CBK_KNET_TABLE;
     return $wpdb->get_row("SELECT * FROM `$table_name` WHERE `order_id`='$order_id' ORDER BY `id` DESC  LIMIT 1");
 }
+
+
+add_action("cbk_knet_create_new_transation","do_cbk_knet_create_new_transation", 10, 2);
+
+/**
+ * @param $order
+ * @param $data
+ * @return bool|false|int
+ */
+function do_cbk_knet_create_new_transation($order,$data){
+    global $wpdb;
+    $table_name = $wpdb->prefix.CBK_KNET_TABLE;
+    try {
+        if(!cbk_is_transation_exsite($data["payment_id"])){
+            return $wpdb->insert(
+                $table_name,
+                [
+                    'order_id' => $order->get_id(),
+                    'payment_id' => $data["payment_id"],
+                    'track_id' => $data["track_id"],
+                    'tran_id' => $data["tran_id"],
+                    'ref_id' => $data["ref_id"],
+                    'pay_id' => $data["pay_id"],
+                    'status' => $data["status"],
+                    'result' => $data["result"],
+                    'amount'=>$data["amount"],
+                    'info' => json_encode($data),
+                    'created_at' => current_time( 'mysql' ),
+                ]
+            );
+        }
+        return false;
+    }catch (Exception $e){
+        return false;
+    }
+}
