@@ -5,22 +5,7 @@
     <title>{title}</title>
 </head>
 <body>
-    <div style='font-size:2rem;direction:rtl;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);text-align:center'>
-        {logo}
-        <div><div class="loader"></div></div>
-        {text1}
-        <br>
-        <b>{text2}</b>
-        <form id='paymentCbkForm' method='post' action='{action}' enctype='application/x-www-form-urlencoded'>
-            {hidden_inputs}
-            <button type="submit" class="btn btn-dark">{submit_text}</button>
-        </form>
-    </div>
-
-    <script type='text/javascript'>
-        document.getElementById('paymentCbkForm').submit();
-    </script>
-    <style>
+        <style>
         .btn {
             display: inline-block;
             font-weight: 400;
@@ -68,5 +53,21 @@
             100% { transform: rotate(360deg); }
         }
     </style>
+    <div style='font-size:2rem;direction:rtl;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);text-align:center'>
+        {logo}
+        <div><div class="loader"></div></div>
+        {text1}
+        <br>
+        <b>{text2}</b>
+        <form id='paymentCbkForm' method='post' action='{action}' enctype='application/x-www-form-urlencoded'>
+            {hidden_inputs}
+            <button type="submit" class="btn btn-dark">{submit_text}</button>
+        </form>
+    </div>
+
+    <script type='text/javascript'>
+        document.getElementById('paymentCbkForm').submit();
+    </script>
+
 </body>
 </html>
