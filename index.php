@@ -250,9 +250,8 @@ if (!defined('ABSPATH')) {
              * status,pay url
              * 1- get request data (pay url)
              * 2- Mark as on-hold (we're awaiting the cheque)
-             * 3- Remove cart
-             * 4- Return thankyou redirect
-             * 5- or failed pay.
+             * 3- Return thank you redirect
+             * 4- or failed pay.
              */
             public function process_payment($order_id)
             {
@@ -271,11 +270,9 @@ if (!defined('ABSPATH')) {
                 // Mark as on-hold (we're awaiting the cheque)
                 $order->update_status('on-hold', __('Awaiting cheque payment', 'woocommerce'));
 
-                // Remove cart
-                //$woocommerce->cart->empty_cart();
 
                 if ($request) {
-                    // Return thankyou redirect
+                    // Return thank you redirect
                     return [
                         'result' => 'success',
                         'redirect' => $request['url'],
@@ -294,6 +291,8 @@ if (!defined('ABSPATH')) {
             /**
              * return pay url to rediredt to knet gateway web site
              * return array.
+             * @param $order
+             * @return bool|string[]
              */
             public function request($order)
             {
@@ -309,6 +308,10 @@ if (!defined('ABSPATH')) {
                 ];
             }
 
+            /**
+             * @param $order
+             * @return float|int
+             */
             public function getTotalAmount($order){
                if($this->currency == "KWD"){
                     return $order->get_total();
@@ -412,7 +415,7 @@ if (!defined('ABSPATH')) {
             }
 
             /**
-             * get responce came from kney payment
+             * get response came from KNET payment
              * return array().
              * @param null $error_code
              * @param null $encrp
@@ -551,14 +554,14 @@ if (!defined('ABSPATH')) {
              */
             public function cbk_woo_change_order_received_text($str) {
                 global  $id;
-                $order = $this->get_order_in_recived_page($id,true);
+                $order = $this->get_order_in_received_page($id,true);
                 $order_status = $order->get_status();
                 return  sprintf("%s <b><span style=\"color:%s\">%s</span></b>.",__("Thank you. Your order has been","cbk_knet"),$this->get_status_color($order_status),__(ucfirst($order_status),"woocommerce"));
             }
 
             public function cbk_thank_you_title( $old_title){
                 global  $id;
-                $order_status = $this->get_order_in_recived_page($id);
+                $order_status = $this->get_order_in_received_page($id);
 
                 if ( isset ( $order_status ) ) {
                     return  sprintf( "%s , <b><span style=\"color:%s\">%s</span></b>",__('Order',"cbk_knet"),$this->get_status_color($order_status), esc_html( __(ucfirst($order_status),"woocommerce")) );
@@ -591,7 +594,7 @@ if (!defined('ABSPATH')) {
              * @param bool $return_order
              * @return bool|string|WC_Order
              */
-            private function get_order_in_recived_page($page_id,$return_order= false){
+            private function get_order_in_received_page($page_id, $return_order= false){
                 global $wp;
                 if ( is_order_received_page() && get_the_ID() === $page_id ) {
                     $order_id  = apply_filters( 'woocommerce_thankyou_order_id', absint( $wp->query_vars['order-received'] ) );
@@ -612,7 +615,10 @@ if (!defined('ABSPATH')) {
             }
 
 
-
+            /**
+             * @param $available_gateways
+             * @return mixed
+             */
             public  function  cbk_conditional_payment_gateways($available_gateways){
 
                 if(is_admin()){
@@ -630,6 +636,7 @@ if (!defined('ABSPATH')) {
                 }
                 return $available_gateways;
             }
+
             /**
              * @param $order
              */
@@ -672,25 +679,25 @@ if (!defined('ABSPATH')) {
 
             /**
              * @param $order
-             * @param $knet_detials
+             * @param $knet_details
              * @param string $template
              * @return mixed
              */
-            private function format_email($order,$knet_detials,$template="templates/knet-details.html")
+            private function format_email($order, $knet_details, $template="templates/knet-details.html")
             {
 
                 $template = file_get_contents(plugin_dir_path(__FILE__).$template);
                 $replace = [
                     "{icon}"=> plugin_dir_url(__FILE__)."assets/knet-logo.png",
                     "{title}" => __("Knet details","cbk_knet"),
-                    "{payment_id}" => ($knet_detials->payment_id) ? $knet_detials->payment_id : "---",
-                    "{track_id}" => ($knet_detials->track_id) ? $knet_detials->track_id : "---",
-                    "{amount}" => ($knet_detials->amount) ? $knet_detials->amount : "---",
-                    "{tran_id}" => ($knet_detials->tran_id) ? $knet_detials->tran_id : "---",
-                    "{ref_id}" => ($knet_detials->ref_id) ? $knet_detials->ref_id : "---",
-                    "{pay_id}" => ($knet_detials->pay_id) ? $knet_detials->pay_id : "---",
-                    "{created_at}" => ($knet_detials->created_at) ? wp_date("F j, Y", strtotime($knet_detials->created_at) ) : "---",
-                    "{result}" => sprintf("<b><span style=\"color:%s\">%s</span></b>", $this->get_status_color($order->get_status()), $knet_detials->result),
+                    "{payment_id}" => ($knet_details->payment_id) ? $knet_details->payment_id : "---",
+                    "{track_id}" => ($knet_details->track_id) ? $knet_details->track_id : "---",
+                    "{amount}" => ($knet_details->amount) ? $knet_details->amount : "---",
+                    "{tran_id}" => ($knet_details->tran_id) ? $knet_details->tran_id : "---",
+                    "{ref_id}" => ($knet_details->ref_id) ? $knet_details->ref_id : "---",
+                    "{pay_id}" => ($knet_details->pay_id) ? $knet_details->pay_id : "---",
+                    "{created_at}" => ($knet_details->created_at) ? wp_date("F j, Y", strtotime($knet_details->created_at) ) : "---",
+                    "{result}" => sprintf("<b><span style=\"color:%s\">%s</span></b>", $this->get_status_color($order->get_status()), $knet_details->result),
                 ];
                 $replace_lang = [
                     "_lang(result)" => __("Result","cbk_knet"),
@@ -701,7 +708,7 @@ if (!defined('ABSPATH')) {
                     "_lang(ref_id)" => __("Refrance id","cbk_knet"),
                     "_lang(pay_id)" => __("Pay id","cbk_knet"),
                     "_lang(created_at)" => __('Created at', "cbk_knet"),
-                    "{result}" => sprintf("<b><span style=\"color:%s\">%s</span></b>", $this->get_status_color($order->get_status()), $knet_detials->result),
+                    "{result}" => sprintf("<b><span style=\"color:%s\">%s</span></b>", $this->get_status_color($order->get_status()), $knet_details->result),
                 ];
                 $replace = array_merge($replace, $replace_lang);
                 return str_replace(array_keys($replace), array_values($replace), $template);
@@ -711,7 +718,9 @@ if (!defined('ABSPATH')) {
 
     /**
      * Add the Gateway to WooCommerce.
-     **/
+     * @param $methods
+     * @return mixed
+     */
     function woocommerce_add_cbk_knet_gateway($methods)
     {
         global $CBK_KNET_CLASS_NAME;
@@ -721,25 +730,25 @@ if (!defined('ABSPATH')) {
 
     add_filter('woocommerce_payment_gateways', 'woocommerce_add_cbk_knet_gateway');
 
-        function my_plugin_load_my_own_textdomain( $mofile, $domain ) {
+        function cbk_knet_load_my_own_text_domain($mo_file, $domain ) {
 
-            if ( 'cbk_knet' === $domain && false !== strpos( $mofile, WP_LANG_DIR . '/plugins/' ) ) {
+            if ( 'cbk_knet' === $domain && false !== strpos( $mo_file, WP_LANG_DIR . '/plugins/' ) ) {
 
                 $locale = apply_filters( 'plugin_locale', determine_locale(), $domain );
-                $mofile = WP_PLUGIN_DIR . '/' . dirname( plugin_basename( __FILE__ ) ) . '/languages/' . $domain . '-' . $locale . '.mo';
+                $mo_file = WP_PLUGIN_DIR . '/' . dirname( plugin_basename( __FILE__ ) ) . '/languages/' . $domain . '-' . $locale . '.mo';
             }
-            return $mofile;
+            return $mo_file;
         }
-        add_filter( 'load_textdomain_mofile', 'my_plugin_load_my_own_textdomain', 10, 2 );
+        add_filter( 'load_textdomain_mofile', 'cbk_knet_load_my_own_text_domain', 10, 2 );
 
 
-        add_action( 'init', 'wpdocs_load_textdomain' );
+        add_action( 'init', 'cbk_knet_load_text_domain');
 
-        function wpdocs_load_textdomain() {
+        function cbk_knet_load_text_domain() {
             load_plugin_textdomain( 'cbk_knet', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
         }
     /*
-     * add knet responce query var
+     * add knet response query var
      */
     add_filter('query_vars', function ($query_vars) {
         $query_vars[] = 'cbk_knet_redirect';
@@ -749,7 +758,7 @@ if (!defined('ABSPATH')) {
         return $query_vars;
     });
     /*
-     * define knet responce
+     * define knet response
      */
     add_action('wp', function ($request) {
         if (isset($request->query_vars['ErrorCode']) && null !== sanitize_text_field($request->query_vars['ErrorCode'])) {
@@ -803,7 +812,7 @@ if (!defined('ABSPATH')) {
                 "{action}" => $CBK_Gateway_Knet->request_url.$CBK_Gateway_Knet->access_token,
                 "{title}" => get_bloginfo("title"),
                 "{hidden_inputs}"=>$inputs,
-                "{logo}"=> sprintf("<img src='%s' width='110px' />",plugin_dir_url(__FILE__)."assets/knet-logo.png"),
+                "{logo}"=> sprintf("<img src='%s' width='110px'  alt='%s'/>",plugin_dir_url(__FILE__)."assets/knet-logo.png",get_bloginfo("title")),
                 "{text1}" => __("You are being taken to the payment page...","cbk_knet"),
                 "{text2}" => __("You are being taken to the payment page...","cbk_knet"),
                 "{submit_text}" => __("or Click here","cbk_knet"),
@@ -819,48 +828,51 @@ if (!defined('ABSPATH')) {
     register_activation_hook( __FILE__, 'create_cbk_transactions_db_table');
 
     add_action("admin_init",function (){
-    $action = esc_attr($_GET["cbk_knet_export"] ?? "");
-    if(is_admin()){
-        if(sanitize_text_field($action) == "excel"){
-            $rows = cbk_knet_trans_grid::get_transations(1000);
-            $list[] =[__('Order', "cbk_knet"), __('Status', "cbk_knet"), __('Result', "cbk_knet"), __('Amount', "cbk_knet"), __('Payment id', "cbk_knet"), __('Tracking id', "cbk_knet"), __('Transaction id', "cbk_knet"), __('Refrance id', "cbk_knet"), __('Pay id', "cbk_knet"), __('Created at', "cbk_knet") ];
-            if($rows){
-                foreach ($rows as $row){
-                    $list[] = [$row['order_id'],__($row['status'],"wc_kent"),$row['result'],$row['amount'],$row['payment_id'],$row['track_id'],$row['tran_id'],$row['ref_id'],$row['pay_id'],$row['created_at']];
-                }
-            }
-            $xlsx = SimpleXLSXGen::fromArray( $list );
-            $xlsx->downloadAs(date("YmdHis").'.xlsx'); // or downloadAs('books.xlsx') or $xlsx_content = (string) $xlsx
-            exit();
-        }elseif (sanitize_text_field($action) == "csv"){
+        $action = "";
+        if(isset($_GET["cbk_knet_export"])){
+            $action = esc_attr($_GET["cbk_knet_export"]);
+        }
 
-            $rows = cbk_knet_trans_grid::get_transations(1000);
-            if($rows){
-                $filename =  date('YmdHis') . ".csv";
-                $f = fopen('php://memory', 'w');
-                $delimiter = ",";
-                $head = [__('Order', "cbk_knet"), __('Status', "cbk_knet"), __('Result', "cbk_knet"), __('Amount', "cbk_knet"), __('Payment id', "cbk_knet"), __('Tracking id', "cbk_knet"), __('Transaction id', "cbk_knet"), __('Refrance id', "cbk_knet"), __('Pay id', "cbk_knet"), __('Created at', "cbk_knet") ];
-                fputcsv($f, $head,$delimiter);
-                foreach ($rows as $row){
-                    $listData = [$row['order_id'],__($row['status'],"wc_kent"),$row['result'],$row['amount'],$row['payment_id'],$row['track_id'],$row['tran_id'],$row['ref_id'],$row['pay_id'],$row['created_at']];
-                    fputcsv($f, $listData, $delimiter);
+        if(is_admin()){
+            if(sanitize_text_field($action) == "excel"){
+                $rows = cbk_knet_trans_grid::get_transations(1000);
+                $list[] =[__('Order', "cbk_knet"), __('Status', "cbk_knet"), __('Result', "cbk_knet"), __('Amount', "cbk_knet"), __('Payment id', "cbk_knet"), __('Tracking id', "cbk_knet"), __('Transaction id', "cbk_knet"), __('Refrance id', "cbk_knet"), __('Pay id', "cbk_knet"), __('Created at', "cbk_knet") ];
+                if($rows){
+                    foreach ($rows as $row){
+                        $list[] = [$row['order_id'],__($row['status'],"wc_kent"),$row['result'],$row['amount'],$row['payment_id'],$row['track_id'],$row['tran_id'],$row['ref_id'],$row['pay_id'],$row['created_at']];
+                    }
                 }
-                fseek($f, 0);
-                header('Content-Type: text/csv');
-                header('Content-Disposition: attachment; filename="' . $filename . '";');
-                fpassthru($f);
+                $xlsx = SimpleXLSXGen::fromArray( $list );
+                $xlsx->downloadAs(date("YmdHis").'.xlsx'); // or downloadAs('books.xlsx') or $xlsx_content = (string) $xlsx
                 exit();
+            }elseif (sanitize_text_field($action) == "csv"){
+
+                $rows = cbk_knet_trans_grid::get_transations(1000);
+                if($rows){
+                    $filename =  date('YmdHis') . ".csv";
+                    $f = fopen('php://memory', 'w');
+                    $delimiter = ",";
+                    $head = [__('Order', "cbk_knet"), __('Status', "cbk_knet"), __('Result', "cbk_knet"), __('Amount', "cbk_knet"), __('Payment id', "cbk_knet"), __('Tracking id', "cbk_knet"), __('Transaction id', "cbk_knet"), __('Refrance id', "cbk_knet"), __('Pay id', "cbk_knet"), __('Created at', "cbk_knet") ];
+                    fputcsv($f, $head,$delimiter);
+                    foreach ($rows as $row){
+                        $listData = [$row['order_id'],__($row['status'],"wc_kent"),$row['result'],$row['amount'],$row['payment_id'],$row['track_id'],$row['tran_id'],$row['ref_id'],$row['pay_id'],$row['created_at']];
+                        fputcsv($f, $listData, $delimiter);
+                    }
+                    fseek($f, 0);
+                    header('Content-Type: text/csv');
+                    header('Content-Disposition: attachment; filename="' . $filename . '";');
+                    fpassthru($f);
+                    exit();
+                }
             }
         }
-    }
-
-});
+    });
 
     /**
      * notify is currency not KWD
      */
-    add_action('admin_notices', 'cbk_knet_is_curnancy_not_kwd');
-    function cbk_knet_is_curnancy_not_kwd(){
+    add_action('admin_notices', 'cbk_knet_is_currency_not_kwd');
+    function cbk_knet_is_currency_not_kwd(){
         $currency = get_option('woocommerce_currency');
         if(isset($currency) && $currency != "KWD"){
             echo '<div class="notice notice-warning is-dismissible">
@@ -869,6 +881,9 @@ if (!defined('ABSPATH')) {
         }
     }
 
+    /**
+     * die and dump
+     */
     if(!function_exists("dd")){
         function dd(...$data){
             echo "<pre>";
