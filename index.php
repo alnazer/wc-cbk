@@ -47,9 +47,9 @@ if (!defined('ABSPATH')) {
             create_cbk_transactions_db_table();
         }
         /**
-         *  Knet Gateway.
+         *  KNET Gateway.
          *
-         * Provides a VISA Payment Gateway.
+         * Provides a KNET Payment Gateway.
          *
          * @class       CBK_Gateway_Knet
          * @extends     WC_Payment_Gateway
