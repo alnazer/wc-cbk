@@ -30,9 +30,14 @@ function create_cbk_transactions_db_table(){
         dbDelta( $sql );
         add_option( 'cbk_knet_db_version', CBK_KNET_DV_VERSION);
     }
+
+    register_uninstall_hook( __FILE__,'cbk_knet_uninstall');
 }
 
-
+function cbk_knet_uninstall(){
+    //  codes to perform during unistallation
+    delete_option('cbk_knet_db_version');
+}
 
 add_action( 'add_meta_boxes', 'cbk_knet_details_meta_boxes' );
 
