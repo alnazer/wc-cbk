@@ -854,7 +854,10 @@ if (!defined('ABSPATH')) {
     }
 
 });
-
+    function cbk_knet_uninstall(){
+        //  codes to perform during unistallation
+        delete_option('cbk_knet_db_version');
+    }
     /**
      * notify is currency not KWD
      */
