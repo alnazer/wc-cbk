@@ -817,6 +817,7 @@ if (!defined('ABSPATH')) {
 
     // call to install data
     register_activation_hook( __FILE__, 'create_cbk_transactions_db_table');
+
     add_action("admin_init",function (){
     $action = esc_attr($_GET["cbk_knet_export"] ?? "");
     if(is_admin()){
@@ -854,10 +855,7 @@ if (!defined('ABSPATH')) {
     }
 
 });
-    function cbk_knet_uninstall(){
-        //  codes to perform during unistallation
-        delete_option('cbk_knet_db_version');
-    }
+
     /**
      * notify is currency not KWD
      */
