@@ -1,4 +1,4 @@
-=== CBK Al-Tijari Payment Gateway Knet ===
+=== Gateway for CBK Al-Tijari Knet on WooCommerce ===
 Contributors: hassan
 Tags: KNET,payment,cbk,knet,Al-Tijari
 Plugin URI: https://github.com/alnazer/cbk-knet
@@ -33,7 +33,7 @@ download and unzip to plugins folder
 or
 From merchant’s WordPress admin
 1. Go to plugin section-> Add new
-2. Search for “CBK Al-Tijari Payment Gateway Knet”
+2. Search for “Gateway for CBK Al-Tijari Knet on WooCommerce”
 3. Click on Install Now
 4. Click on Activate
 

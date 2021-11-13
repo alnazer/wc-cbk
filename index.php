@@ -1,8 +1,8 @@
 <?php
 /*
-*Plugin Name: CBK Payment Gateway for knet on WooCommerce
+*Plugin Name: Gateway for CBK Al-Tijari Knet on WooCommerce
 *Plugin URI: https://github.com/alnazer/cbk-knet
-*Description: The new update of the CBK (Al-Tijari) Payment gateway via woocommerce paymemt.
+*Description: The Gateway for CBK Al-Tijari Knet on WooCommerce update of the CBK (Al-Tijari) Payment gateway via woocommerce paymemt.
 *Author: Hassan - hassanaliksa@gmail.com - +96590033807
 *Version: 1.0.0
 *Author URI: https://github.com/alnazer
