@@ -830,7 +830,7 @@ if (!defined('ABSPATH')) {
     add_action("admin_init",function (){
         $action = "";
         if(isset($_GET["cbk_knet_export"])){
-            $action = esc_attr($_GET["cbk_knet_export"]);
+            $action = sanitize_text_field($_GET["cbk_knet_export"]);
         }
 
         if(is_admin()){
