@@ -63,11 +63,11 @@ if(!function_exists("alnazer_init_cbk_knet")){
             public $client_allow_test;
             public $client_id;
             public $client_secret;
-            public $encrp_key;
+            public $encamp_key;
             public $currency;
             public $exchange;
             public $GatewayUrl = 'https://pgtest.cbk.com';
-            private $auth_url = '';
+            private $auth_url;
             public $request_url = '';
             public $result_url = '';
             public $access_token = false;
@@ -114,7 +114,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
                 $this->client_id = $this->get_option('client_id');
                 $this->exchange = $this->get_option('exchange');
                 $this->client_secret = $this->get_option('client_secret');
-                $this->encrp_key = $this->get_option('encrp_key');
+                $this->encamp_key = $this->get_option('encrp_key');
                 $this->is_test = $this->get_option('is_test');
                 $this->client_allow_test = $this->get_option('client_allow_test');
                 if ($this->is_test == 'no') {
@@ -276,10 +276,12 @@ if(!function_exists("alnazer_init_cbk_knet")){
              * 2- Mark as on-hold (we're awaiting the cheque)
              * 3- Return thank you redirect
              * 4- or failed pay.
+             * @param $order_id
+             * @return array
              */
             public function process_payment($order_id)
             {
-                global $woocommerce;
+
                 $order = new WC_Order($order_id);
                 if (!$order->get_id()) {
                     wc_add_notice(__('Order not found', 'cbk-knet'), 'error');
@@ -352,10 +354,10 @@ if(!function_exists("alnazer_init_cbk_knet")){
              * url for order view.
              * @param null $error_code
              * @param $order_id
-             * @param null $encrp
+             * @param null $encamp
              * @return string
              */
-            public function updateOrder($error_code = null, $order_id, $encrp = null)
+            public function updateOrder($error_code, $order_id, $encamp = null)
             {
                 WC()->session->set('cbk_session_order_id', 0);
                 // define response data
@@ -365,7 +367,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
 
                     return $order->get_view_order_url();
                 }
-                $responseData = $this->response($error_code, $encrp);
+                $responseData = $this->response($error_code, $encamp);
 
                 if ($responseData === false && $order) {
                     wc_add_notice(__('Order Payment has error', 'cbk-knet'), 'error');
@@ -496,7 +498,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
              */
             public function getAccessToken()
             {
-                $post_fields = ['ClientId' => $this->client_id, 'ClientSecret' => $this->client_secret, 'ENCRP_KEY' => $this->encrp_key];
+                $post_fields = ['ClientId' => $this->client_id, 'ClientSecret' => $this->client_secret, 'ENCRP_KEY' => $this->encamp_key];
 
                 $curl = curl_init();
 
@@ -825,7 +827,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
             $CBK_Gateway_Knet->get_access_token();
 
             $postdata = [
-                'tij_MerchantEncryptCode' => $CBK_Gateway_Knet->encrp_key,
+                'tij_MerchantEncryptCode' => $CBK_Gateway_Knet->encamp_key,
                 'tij_MerchAuthKeyApi' => $CBK_Gateway_Knet->access_token,
                 'tij_MerchantPaymentLang' => $CBK_Gateway_Knet->lang,
                 'tij_MerchantPaymentAmount' => $CBK_Gateway_Knet->getTotalAmount($order),
