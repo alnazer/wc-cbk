@@ -4,10 +4,9 @@ Tags: KNET,payment,cbk,knet,Al-Tijari
 Plugin URI: https://github.com/alnazer/cbk-knet
 Author URI: https://github.com/alnazer
 Version: 1.0.0
-Requires at least: 5
-Tested up to: 8.5
+Tested up to: 8.5.2
 Requires PHP: 7.0
-Stable tag: 8.5
+Stable tag: 1.0.0
 License: MIT
 License URI: https://choosealicense.com/licenses/mit/
 
