@@ -40,6 +40,8 @@ From merchant’s WordPress admin
 
 go to woocommerce setting in side menu and select tab payment and active Cbk (Al-Tijari) via Knet from list
 
+## support
+hassanaliksa@gmail.com - +96590033807
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)

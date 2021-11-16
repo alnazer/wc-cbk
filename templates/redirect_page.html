@@ -20,14 +20,13 @@
             user-select: none;
             background-color: transparent;
             border: 1px solid transparent;
-            border-top-color: transparent;
-            border-right-color: transparent;
-            border-bottom-color: transparent;
-            border-left-color: transparent;
             padding: .375rem .75rem;
             font-size: 1rem;
             border-radius: .25rem;
             transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        .mb-1{
+            margin-bottom: 1rem;
         }
         .btn-dark {
             color: #fff;
@@ -47,18 +46,26 @@
             width: 50px;
             height: 50px;
             animation: spin 2s linear infinite;
+            margin: 0.8rem auto 0.8rem auto;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .main-content{font-size:2rem;
+            direction:rtl;
+            position: fixed;top: 50%;
+            left: 50%;transform: translate(-50%, -50%);
+            text-align:center
+        }
+
     </style>
-    <div style='font-size:2rem;direction:rtl;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);text-align:center'>
+    <div class="main-content" >
         {logo}
         <div><div class="loader"></div></div>
-        {text1}
-        <br>
-        <b>{text2}</b>
+        <div class="mb-1">{text1}</div>
+        <div class="mb-1">{text2}</div>
+        <div class="mb-1">{text3}</div>
         <form id='paymentCbkForm' method='post' action='{action}' enctype='application/x-www-form-urlencoded'>
             {hidden_inputs}
             <button type="submit" class="btn btn-dark">{submit_text}</button>
