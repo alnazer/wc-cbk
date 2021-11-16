@@ -82,22 +82,22 @@ class cbk_knet_trans_grid extends WP_List_Table
             <input type="hidden" name="page"  value="<?php echo $_REQUEST['page']; ?>"/>
             <?php
             if ( ! empty( $_REQUEST['orderby'] ) ) {
-                echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
+                echo '<input type="hidden" name="orderby" value="' . sanitize_text_field( $_REQUEST['orderby'] ) . '" />';
             }
             if ( ! empty( $_REQUEST['order'] ) ) {
-                echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
+                echo '<input type="hidden" name="order" value="' . sanitize_text_field( $_REQUEST['order'] ) . '" />';
             }
             if ( ! empty( $_REQUEST['post_mime_type'] ) ) {
-                echo '<input type="hidden" name="post_mime_type" value="' . esc_attr( $_REQUEST['post_mime_type'] ) . '" />';
+                echo '<input type="hidden" name="post_mime_type" value="' . sanitize_text_field( $_REQUEST['post_mime_type'] ) . '" />';
             }
             if ( ! empty( $_REQUEST['detached'] ) ) {
-                echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
+                echo '<input type="hidden" name="detached" value="' . sanitize_text_field( $_REQUEST['detached'] ) . '" />';
             }
 
             ?>
             <div class="cbk-knet-field">
                 <label for="order_id"><?php  echo __('Order', "cbk_knet") ?></label>
-                <input type="search" id="order_id" name="order_id" value="<?php echo esc_attr($_REQUEST['order_id'] ?? ""); ?>" placeholder="<?php  echo __('Order', "cbk_knet") ?>" />
+                <input type="search" id="order_id" name="order_id" value="<?php echo sanitize_text_field($_REQUEST['order_id'] ?? ""); ?>" placeholder="<?php  echo __('Order', "cbk_knet") ?>" />
             </div>
 
             <div class="cbk-knet-field">
@@ -110,35 +110,35 @@ class cbk_knet_trans_grid extends WP_List_Table
             </div>
             <div class="cbk-knet-field">
                 <label for="result"><?php  echo __('Result', "cbk_knet") ?></label>
-                <input type="search" id="result" name="result" value="<?php  echo esc_attr($_REQUEST['result'] ?? ""); ?>" placeholder="<?php  echo __('Result', "cbk_knet") ?>" />
+                <input type="search" id="result" name="result" value="<?php  echo sanitize_text_field($_REQUEST['result'] ?? ""); ?>" placeholder="<?php  echo __('Result', "cbk_knet") ?>" />
             </div>
             <div class="cbk-knet-field">
                 <label for="amount"><?php  echo __('Amount', "cbk_knet") ?></label>
-                <input type="search" id="amount" name="amount" value="<?php  echo esc_attr($_REQUEST['amount'] ?? ""); ?>" placeholder="<?php  echo __('amount', "cbk_knet") ?>" />
+                <input type="search" id="amount" name="amount" value="<?php  echo sanitize_text_field($_REQUEST['amount'] ?? ""); ?>" placeholder="<?php  echo __('amount', "cbk_knet") ?>" />
             </div>
             <div class="cbk-knet-field">
                 <label for="payment_id"><?php  echo __('Payment id', "cbk_knet") ?></label>
-                <input type="search" id="payment_id" name="payment_id" value="<?php  echo esc_attr($_REQUEST['payment_id'] ?? ""); ?>" placeholder="<?php  echo __('Payment id', "cbk_knet") ?>" />
+                <input type="search" id="payment_id" name="payment_id" value="<?php  echo sanitize_text_field($_REQUEST['payment_id'] ?? ""); ?>" placeholder="<?php  echo __('Payment id', "cbk_knet") ?>" />
             </div>
             <div class="cbk-knet-field">
                 <label for="track_id"><?php  echo __('Tracking id', "cbk_knet") ?></label>
-                <input type="search" id="track_id" name="track_id" value="<?php  echo esc_attr($_REQUEST['track_id'] ?? ""); ?>" placeholder="<?php  echo __('Tracking id', "cbk_knet") ?>" />
+                <input type="search" id="track_id" name="track_id" value="<?php  echo sanitize_text_field($_REQUEST['track_id'] ?? ""); ?>" placeholder="<?php  echo __('Tracking id', "cbk_knet") ?>" />
             </div>
             <div class="cbk-knet-field">
                 <label for="tran_id"><?php  echo __('Transaction id', "cbk_knet") ?></label>
-                <input type="search" id="tran_id" name="tran_id" value="<?php  echo esc_attr($_REQUEST['tran_id'] ?? ""); ?>" placeholder="<?php  echo __('Transaction id', "cbk_knet") ?>" />
+                <input type="search" id="tran_id" name="tran_id" value="<?php  echo sanitize_text_field($_REQUEST['tran_id'] ?? ""); ?>" placeholder="<?php  echo __('Transaction id', "cbk_knet") ?>" />
             </div>
             <div class="cbk-knet-field">
                 <label for="ref_id"><?php  echo __('Refrance id', "cbk_knet") ?></label>
-                <input type="search" id="ref_id" name="ref_id" value="<?php  echo esc_attr($_REQUEST['ref_id'] ?? ""); ?>" placeholder="<?php  echo __('Refrance id', "cbk_knet") ?>" />
+                <input type="search" id="ref_id" name="ref_id" value="<?php  echo sanitize_text_field($_REQUEST['ref_id'] ?? ""); ?>" placeholder="<?php  echo __('Refrance id', "cbk_knet") ?>" />
             </div>
             <div class="cbk-knet-field">
                 <label for="ref_id"><?php  echo __('Pay id', "cbk_knet") ?></label>
-                <input type="search" id="pay_id" name="pay_id" value="<?php  echo esc_attr($_REQUEST['pay_id'] ?? ""); ?>" placeholder="<?php  echo __('Pay id', "cbk_knet") ?>" />
+                <input type="search" id="pay_id" name="pay_id" value="<?php  echo sanitize_text_field($_REQUEST['pay_id'] ?? ""); ?>" placeholder="<?php  echo __('Pay id', "cbk_knet") ?>" />
             </div>
             <div class="cbk-knet-field">
                 <label for="created_at"><?php  echo __('Created at', "cbk_knet") ?></label>
-                <input type="date" id="created_at" name="created_at" value="<?php  echo esc_attr($_REQUEST['created_at'] ?? ""); ?>" placeholder="<?php  echo __('Created at', "cbk_knet") ?>" />
+                <input type="date" id="created_at" name="created_at" value="<?php  echo sanitize_text_field($_REQUEST['created_at'] ?? ""); ?>" placeholder="<?php  echo __('Created at', "cbk_knet") ?>" />
             </div>
             <div>
                 <?php submit_button( $text, 'submit', '', false, array( 'id' => 'search-submit' ) ); ?>
@@ -254,8 +254,8 @@ class cbk_knet_trans_grid extends WP_List_Table
         $sql = "SELECT * FROM ".(new self)->table." WHERE 1=1 ".(new self)->filter_query();
 
         if ( ! empty( $_REQUEST['orderby'] ) ) {
-            $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
-            $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
+            $sql .= ' ORDER BY ' . sanitize_text_field( $_REQUEST['orderby'] );
+            $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . sanitize_text_field( $_REQUEST['order'] ) : ' ASC';
         }else{
             $sql .= " ORDER BY `id` DESC ";
         }
