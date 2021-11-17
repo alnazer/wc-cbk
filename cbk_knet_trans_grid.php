@@ -216,7 +216,7 @@ if(!class_exists("Alnazer_Cbk_KNET_Trans_Grid")){
                 case 'status':
                     return ($item[$column_name] == "fail") ? sprintf("<span  style='color:red'>%s</span>",__($item[ $column_name ],"cbk_knet")) : sprintf("<span  style='color:green'>%s</span>",__($item[ $column_name ],"cbk_knet"));
                 case 'result':
-                    return ($item[$column_name] != "CAPTURED") ? sprintf("<span style='color:red'>%s</span>",$item[ $column_name ]) : sprintf("<span  style='color:green'>%s</span>",$item[ $column_name ]);
+                    return ($item[$column_name] != "Success") ? sprintf("<span style='color:red'>%s</span>",$item[ $column_name ]) : sprintf("<span  style='color:green'>%s</span>",$item[ $column_name ]);
                 default:
                     return $item["$column_name"]; //Show the whole array for troubleshooting purposes
             }
