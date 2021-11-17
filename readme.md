@@ -1,10 +1,10 @@
 === Gateway for CBK Al-Tijari Knet on WooCommerce ===
-Contributors: hassan
+Contributors: alnazer
 Tags: KNET,payment,cbk,knet,Al-Tijari
 Plugin URI: https://github.com/alnazer/cbk-knet
 Author URI: https://github.com/alnazer
 Version: 1.0.0
-Tested up to: 8.5.2
+Tested up to: 5.8.2
 Requires PHP: 7.0
 Stable tag: 1.0.0
 License: MIT
@@ -41,7 +41,9 @@ From merchant’s WordPress admin
 go to woocommerce setting in side menu and select tab payment and active Cbk (Al-Tijari) via Knet from list
 
 ## support
+
 hassanaliksa@gmail.com - +96590033807
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)

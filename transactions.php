@@ -64,6 +64,30 @@ if(!function_exists("alnazer_fun_cbk_knet_details_meta_boxes")) {
     function alnazer_fun_cbk_knet_details_meta_boxes()
     {
         global $post;
+        $html_allow = array(
+            "meta"=>["charset"=>[]],
+            "script"=>["type"=>[]],
+            "body"=>[],
+            "html"=>[],
+            "style"=>[],
+            "head"=>[],
+            "title"=>[],
+            "button"=>["type"=>[],"class"=>[],"id"=>[]],
+            "input"=>["type"=>[],"name"=>[],"value"=>[]],
+            "form"=>["id"=>[], "method"=>[], "action"=>[], "enctype"=>[]],
+            'div'=>["class"=>[],"style"=>[]],
+            'h2' => array("class"=>array(),"style"=>array()),
+            "span"=>array("style"=>array()),
+            'table' => array("class"=>array(), "cellpadding"=>array(), "cellpadding"=>array(),"style"=>array()),
+            'tbody' => array("class"=>array()),
+            'tr' => array(),
+            'h3' => array(),
+            'th' => array(),
+            'td' => array(),
+            'b' => array(),
+            'br' => array(),
+            'img' => array("src"=>array(), "width"=>array(), "alt"=>array()
+            ) );
         $list = alnazer_cbk_get_transation_by_orderid($post->ID);
         if ($list) {
             $output = "<table class=\"woocommerce_order_items\" cellspacing=\"2\" cellpadding=\"2\" style='width: 100% !important;'>";
@@ -78,7 +102,7 @@ if(!function_exists("alnazer_fun_cbk_knet_details_meta_boxes")) {
             $output .= "</tbody>";
             $output .= "</table>";
 
-            echo $output;
+            echo wp_kses($output, $html_allow);
         }
     }
 }

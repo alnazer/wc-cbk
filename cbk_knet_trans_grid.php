@@ -72,7 +72,7 @@ if(!class_exists("Alnazer_Cbk_KNET_Trans_Grid")){
         }
 
         public function search_box( $text, $input_id ) {
-            if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
+            if ( empty( esc_attr($_REQUEST['s']) ) && ! $this->has_items() ) {
                 // return;
             }
 
@@ -325,8 +325,8 @@ if(!class_exists("Alnazer_CBK_KNET_Plugin")){
 
         $hook =add_submenu_page(
             'woocommerce',
-            __( '(Al-Tijari) KNET transactions', 'cbk-knet' ),
-            __( '(Al-Tijari) KNET transactions', 'cbk-knet' ),
+            __( '(Al-Tijari) KNET transactions', 'wc-cbk' ),
+            __( '(Al-Tijari) KNET transactions', 'wc-cbk' ),
             'manage_woocommerce',
             "cbk-knet-transactions",
             [ $this, 'plugin_settings_page' ],
@@ -342,7 +342,7 @@ if(!class_exists("Alnazer_CBK_KNET_Plugin")){
     public function plugin_settings_page() {
         ?>
         <div class="wrap">
-            <h2><?php echo __( '(Al-Tijari) KNET transactions', 'cbk-knet' ) ?></h2>
+            <h2><?php echo __( '(Al-Tijari) KNET transactions', 'wc-cbk' ) ?></h2>
 
             <div style="display: flex;gap: 3rem;">
 
@@ -358,7 +358,7 @@ if(!class_exists("Alnazer_CBK_KNET_Plugin")){
                     </div>
                 </div>
                 <div id="post-body" class="metabox-holder columns-2">
-                    <?php $this->transations_obj->search_box(__( 'Filter', 'cbk-knet' ), "cbk_knet_filter") ?>
+                    <?php $this->transations_obj->search_box(__( 'Filter', 'wc-cbk' ), "cbk_knet_filter") ?>
                 </div>
             </div>
         </div>

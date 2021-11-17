@@ -1,12 +1,12 @@
 <?php
 /*
-*Plugin Name: Gateway for CBK Al-Tijari Knet on WooCommerce
+*Plugin Name: Gateway for CBK Al-Tijari Knet
 *Plugin URI: https://github.com/alnazer/cbk-knet
 *Description: The Gateway for CBK Al-Tijari Knet on WooCommerce update of the CBK (Al-Tijari) Payment gateway via woocommerce paymemt.
-*Author: hassan
+*Author: alnazer
 *Version: 1.0.0
 *Author URI: https://github.com/alnazer
-*Text Domain: cbk_knet
+*Text Domain: wc-cbk
 * Domain Path: /languages
 */
 /*
@@ -94,6 +94,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
                 "span"=>array("style"=>array()),
                 'table' => array("class"=>array()),
                 'tr' => array(),
+                'h3' => array(),
                 'th' => array(),
                 'td' => array(),
                 'b' => array(),
@@ -164,8 +165,8 @@ if(!function_exists("alnazer_init_cbk_knet")){
             {
                 $this->id = 'cbk_knet';
                 $this->icon = plugins_url('assets/knet-logo.png', __FILE__);
-                $this->method_title = __('CBK (Al-Tijari) via Knet', 'cbk-knet');
-                $this->method_description = __('intgration with CBK (Al-Tijari) via knet.', 'cbk-knet');
+                $this->method_title = __('CBK (Al-Tijari) via Knet', 'wc-cbk');
+                $this->method_description = __('intgration with CBK (Al-Tijari) via knet.', 'wc-cbk');
                 $this->has_fields = true;
             }
 
@@ -203,37 +204,37 @@ if(!function_exists("alnazer_init_cbk_knet")){
                         'default' => '',
                     ],
                     'exchange' => [
-                        'title' => __('Currency exchange rate ', 'cbk-knet'),
+                        'title' => __('Currency exchange rate ', 'wc-cbk'),
                         'type' => 'number',
                         'custom_attributes' => array( 'step' => 'any', 'min' => '0' ),
-                        'description' => __('It is the rate of multiplying the currency account in the event that the base currency of the store is not the Kuwaiti dinar', 'cbk-knet')." ".__('KWD = exchange rate * amount(USD)', 'cbk-knet'),
+                        'description' => __('It is the rate of multiplying the currency account in the event that the base currency of the store is not the Kuwaiti dinar', 'wc-cbk')." ".__('KWD = exchange rate * amount(USD)', 'wc-cbk'),
                         'default' => 1,
                         'desc_tip' => false,
                     ],
                     'client_id' => [
-                        'title' => __('client Id', 'cbk-knet'),
+                        'title' => __('client Id', 'wc-cbk'),
                         'type' => 'text',
-                        'description' => __('Necessary data requested from the bank', 'cbk-knet'),
+                        'description' => __('Necessary data requested from the bank', 'wc-cbk'),
                         'default' => '',
                     ],
                     'client_secret' => [
-                        'title' => __('Transportal client_secret', 'cbk-knet'),
+                        'title' => __('Transportal client_secret', 'wc-cbk'),
                         'type' => 'password',
-                        'description' => __('Necessary data requested from the bank', 'cbk-knet'),
+                        'description' => __('Necessary data requested from the bank', 'wc-cbk'),
                         'default' => '',
                         'desc_tip' => false,
                     ],
                     'encrp_key' => [
-                        'title' => __('Terminal Resource Key', 'cbk-knet'),
+                        'title' => __('Terminal Resource Key', 'wc-cbk'),
                         'type' => 'password',
-                        'description' => __('Necessary data requested from the bank', 'cbk-knet'),
+                        'description' => __('Necessary data requested from the bank', 'wc-cbk'),
                         'default' => '',
                         'desc_tip' => false,
                     ],
                     'lang' => [
-                        'title' => __('Language', 'cbk-knet'),
+                        'title' => __('Language', 'wc-cbk'),
                         'type' => 'select',
-                        'description' => __('payment page lang', 'cbk-knet'),
+                        'description' => __('payment page lang', 'wc-cbk'),
                         'default' => 'ar',
                         'options' => [
                             'ar' => __('Arabic'),
@@ -250,16 +251,17 @@ if(!function_exists("alnazer_init_cbk_knet")){
              **/
             public function admin_options()
             {
-                echo '<h3>'.__('(Al-Tijari) KNET', 'cbk-knet').'</h3>';
-                echo '<p>'.__('(Al-Tijari) KNET', 'cbk-knet').'</p>';
-                echo '<table class="form-table">';
+                echo wp_kses(sprintf("<h3>%s</h3>", __('(Al-Tijari) KNET', 'wc-cbk')),$this->html_allow);
+                echo wp_kses(sprintf("<p>%s</p>", __('(Al-Tijari) KNET', 'wc-cbk')),$this->html_allow);
+                echo wp_kses('<table class="form-table">',$this->html_allow);
                 $this->generate_settings_html();
-                echo '</table>';
+                echo wp_kses('</table>',$this->html_allow);
             }
 
             public function get_access_token()
             {
                 $response = $this->getAccessToken();
+
                 if ($response !== false) {
                     $this->access_token = $response;
                 } else {
@@ -284,7 +286,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
 
                 $order = new WC_Order($order_id);
                 if (!$order->get_id()) {
-                    wc_add_notice(__('Order not found', 'cbk-knet'), 'error');
+                    wc_add_notice(__('Order not found', 'wc-cbk'), 'error');
 
                     return [
                         'result' => 'error',
@@ -304,7 +306,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
                         'redirect' => $request['url'],
                     ];
                 } else {
-                    $order->add_order_note(__('Payment error:', 'woothemes').__("Knet can't get data", 'cbk-knet'), 'error');
+                    $order->add_order_note(__('Payment error:', 'woothemes').__("Knet can't get data", 'wc-cbk'), 'error');
                     $order->update_status('failed');
 
                     return [
@@ -363,15 +365,15 @@ if(!function_exists("alnazer_init_cbk_knet")){
                 // define response data
                 $order = new WC_Order($order_id);
                 if (!$order->get_id()) {
-                    wc_add_notice(__('Order not found', 'cbk-knet'), 'error');
+                    wc_add_notice(__('Order not found', 'wc-cbk'), 'error');
 
                     return $order->get_view_order_url();
                 }
                 $responseData = $this->response($error_code, $encamp);
 
                 if ($responseData === false && $order) {
-                    wc_add_notice(__('Order Payment has error', 'cbk-knet'), 'error');
-                    wc_add_notice(__($this->error, 'cbk-knet'), 'error');
+                    wc_add_notice(__('Order Payment has error', 'wc-cbk'), 'error');
+                    wc_add_notice(__($this->error, 'wc-cbk'), 'error');
                     $order->add_order_note($this->error);
                     $order->update_status('refunded');
 
@@ -403,18 +405,18 @@ if(!function_exists("alnazer_init_cbk_knet")){
                         "data" => json_encode($responseData),
                     ];
                     if (!$order->get_id()) {
-                        wc_add_notice(__('Order not found', 'cbk-knet'), 'error');
+                        wc_add_notice(__('Order not found', 'wc-cbk'), 'error');
                         return $order->get_view_order_url();
                     } elseif (isset($status)) {
 
                         do_action("cbk_knet_create_new_transation", $order, $transaction_data);
                         $knetInfomation = '';
-                        $knetInfomation .= __('Result', 'cbk-knet')."           : $result\n";
-                        $knetInfomation .= __('Payment id', 'cbk-knet')."       : $payment_id\n";
-                        $knetInfomation .= __('track id', 'cbk-knet')."         : $track_id\n";
-                        $knetInfomation .= __('Transaction id', 'cbk-knet')."   : $tran_id\n";
-                        $knetInfomation .= __('Refrance id', 'cbk-knet')."      : $ref\n";
-                        $knetInfomation .= __('PayId', 'cbk-knet')."            : $PayId\n";
+                        $knetInfomation .= __('Result', 'wc-cbk')."           : $result\n";
+                        $knetInfomation .= __('Payment id', 'wc-cbk')."       : $payment_id\n";
+                        $knetInfomation .= __('track id', 'wc-cbk')."         : $track_id\n";
+                        $knetInfomation .= __('Transaction id', 'wc-cbk')."   : $tran_id\n";
+                        $knetInfomation .= __('Refrance id', 'wc-cbk')."      : $ref\n";
+                        $knetInfomation .= __('PayId', 'wc-cbk')."            : $PayId\n";
 
                         $order->add_order_note($knetInfomation);
                         switch ($status){
@@ -463,6 +465,26 @@ if(!function_exists("alnazer_init_cbk_knet")){
 
                 $this->get_access_token();
                 $this->result_url = $this->result_url.$encrp.'/'.$this->access_token;
+
+                $args = array(
+                    'method'      => 'GET',
+                    'timeout'     => 30,
+                    'httpversion' => CURL_HTTP_VERSION_1_1,
+                    'headers'     => [
+                        'Authorization' => 'Basic '.base64_encode($this->client_id. ":" . $this->client_secret),
+                        'Content-Type' => 'application/json',
+                        'cache-control' => 'no-cache',
+                    ],
+                );
+                $response = wp_remote_get($this->result_url, $args );
+                $response_code = wp_remote_retrieve_response_code( $response );
+                $response_body = wp_remote_retrieve_body( $response);
+                if ( is_wp_error( $response ) ) {
+                    $this->error = $response->get_error_message();
+                }
+                return json_encode($response_body);
+                /*
+
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => $this->result_url,
@@ -490,7 +512,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
 
                 }
 
-                return  $result;
+                return  $result;*/
             }
 
             /**
@@ -499,42 +521,28 @@ if(!function_exists("alnazer_init_cbk_knet")){
             public function getAccessToken()
             {
                 $post_fields = ['ClientId' => $this->client_id, 'ClientSecret' => $this->client_secret, 'ENCRP_KEY' => $this->encamp_key];
-
-                $curl = curl_init();
-
-                curl_setopt_array($curl, [
-                    CURLOPT_URL => $this->auth_url,
-                    CURLOPT_ENCODING => '',
-                    CURLOPT_FOLLOWLOCATION => 1,
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 30,
-                    CURLOPT_SSL_VERIFYHOST => 0,
-                    CURLOPT_SSL_VERIFYPEER => 0,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_2TLS,
-                    CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_RETURNTRANSFER => 1,
-                    CURLOPT_FRESH_CONNECT => true,
-                    CURLOPT_POSTFIELDS => json_encode($post_fields),
-                    CURLOPT_HTTPHEADER => [
-                        'Authorization: Basic '.base64_encode($this->client_id.':'.$this->client_secret),
-                        'Content-Type: application/json',
-                        'cache-control: no-cache',
+                $args = array(
+                    'method'      => 'POST',
+                    'body'        =>  wp_json_encode($post_fields),
+                    'timeout'     => 30,
+                    'httpversion' => CURL_HTTP_VERSION_2TLS,
+                    'headers'     => [
+                        'Authorization' => 'Basic '.base64_encode($this->client_id.':'.$this->client_secret),
+                        'Content-Type' => 'application/json',
+                        'cache-control' => 'no-cache',
                     ],
-                ]);
-
-                $response = curl_exec($curl);
-                $this->error = curl_error($curl);
-
-                curl_close($curl);
-
-                $authenticateData = json_decode($response);
-
-                if ($authenticateData->Status == '1') {
-                    //save access token till expiry
-                    return $authenticateData->AccessToken;
-                } else {
-                    return false;
+                );
+                $response = wp_remote_post( $this->auth_url, $args );
+                $response_code = wp_remote_retrieve_response_code( $response );
+                $response_body = wp_remote_retrieve_body( $response);
+                if(!empty($response_body) && $response_code == 200){
+                    $jsonData = json_decode($response_body);
+                    if($jsonData->Status == 1){
+                        return  $jsonData->AccessToken;
+                    }
                 }
+                return false;
+
             }
 
             /**
@@ -543,31 +551,31 @@ if(!function_exists("alnazer_init_cbk_knet")){
              */
             public function getErrorCode($_code)
             {
-                $code['TIJ0001'] = __('Invalid Merchant Language', 'cbk-knet');
-                $code['TIJ0002'] = __('Invalid Merchant Amount ', 'cbk-knet');
-                $code['TIJ0003'] = __('Invalid Merchant Amount KWD ', 'cbk-knet');
-                $code['TIJ0004'] = __('Invalid Merchant Track ID ', 'cbk-knet');
-                $code['TIJ0005'] = __('Invalid Merchant UDF1 ', 'cbk-knet');
-                $code['TIJ0006'] = __('Invalid Merchant Currency  ', 'cbk-knet');
-                $code['TIJ0007'] = __('Invalid Merchant Payment reference ', 'cbk-knet');
-                $code['TIJ0008'] = __('Invalid Merchant Pay Type ', 'cbk-knet');
-                $code['TIJ0009'] = __('Invalid Merchant API Authenticate Key ', 'cbk-knet');
-                $code['TIJ0010'] = __('Invalid Access ', 'cbk-knet');
-                $code['TIJ0011'] = __('Invalid Merchant Key ', 'cbk-knet');
-                $code['TIJ0012'] = __('Duplicate Merchant Track ID  ', 'cbk-knet');
-                $code['TIJ0013'] = __('Invalid Merchant Key (not match) ', 'cbk-knet');
-                $code['TIJ0014'] = __('Invalid Merchant Key (not available) ', 'cbk-knet');
-                $code['TIJ0015'] = __('Invalid Merchant UDF2 ', 'cbk-knet');
-                $code['TIJ0016'] = __('Error in QR ', 'cbk-knet');
-                $code['TIJ0017'] = __('Invalid Page Access ', 'cbk-knet');
-                $code['TIJ0019'] = __('Invalid KNET/QR Data ', 'cbk-knet');
-                $code['TIJ0020'] = __('Error in KNET ', 'cbk-knet');
-                $code['TIJ0021'] = __('Error Processing Data ', 'cbk-knet');
-                $code['TIJ0022'] = __('Invalid Merchant UDF3 ', 'cbk-knet');
-                $code['TIJ0023'] = __('Invalid Merchant UDF4 ', 'cbk-knet');
-                $code['TIJ0024'] = __('Invalid Merchant UDF5 ', 'cbk-knet');
-                $code['TIJ0027'] = __('Invalid Merchant Return URL ', 'cbk-knet');
-                $code['TIJ0031'] = __('Transaction session expired ', 'cbk-knet');
+                $code['TIJ0001'] = __('Invalid Merchant Language', 'wc-cbk');
+                $code['TIJ0002'] = __('Invalid Merchant Amount ', 'wc-cbk');
+                $code['TIJ0003'] = __('Invalid Merchant Amount KWD ', 'wc-cbk');
+                $code['TIJ0004'] = __('Invalid Merchant Track ID ', 'wc-cbk');
+                $code['TIJ0005'] = __('Invalid Merchant UDF1 ', 'wc-cbk');
+                $code['TIJ0006'] = __('Invalid Merchant Currency  ', 'wc-cbk');
+                $code['TIJ0007'] = __('Invalid Merchant Payment reference ', 'wc-cbk');
+                $code['TIJ0008'] = __('Invalid Merchant Pay Type ', 'wc-cbk');
+                $code['TIJ0009'] = __('Invalid Merchant API Authenticate Key ', 'wc-cbk');
+                $code['TIJ0010'] = __('Invalid Access ', 'wc-cbk');
+                $code['TIJ0011'] = __('Invalid Merchant Key ', 'wc-cbk');
+                $code['TIJ0012'] = __('Duplicate Merchant Track ID  ', 'wc-cbk');
+                $code['TIJ0013'] = __('Invalid Merchant Key (not match) ', 'wc-cbk');
+                $code['TIJ0014'] = __('Invalid Merchant Key (not available) ', 'wc-cbk');
+                $code['TIJ0015'] = __('Invalid Merchant UDF2 ', 'wc-cbk');
+                $code['TIJ0016'] = __('Error in QR ', 'wc-cbk');
+                $code['TIJ0017'] = __('Invalid Page Access ', 'wc-cbk');
+                $code['TIJ0019'] = __('Invalid KNET/QR Data ', 'wc-cbk');
+                $code['TIJ0020'] = __('Error in KNET ', 'wc-cbk');
+                $code['TIJ0021'] = __('Error Processing Data ', 'wc-cbk');
+                $code['TIJ0022'] = __('Invalid Merchant UDF3 ', 'wc-cbk');
+                $code['TIJ0023'] = __('Invalid Merchant UDF4 ', 'wc-cbk');
+                $code['TIJ0024'] = __('Invalid Merchant UDF5 ', 'wc-cbk');
+                $code['TIJ0027'] = __('Invalid Merchant Return URL ', 'wc-cbk');
+                $code['TIJ0031'] = __('Transaction session expired ', 'wc-cbk');
                 if (isset($code[$_code])) {
                     return $code[$_code];
                 }
@@ -764,7 +772,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
         if(!function_exists("alnazer_cbk_knet_load_my_own_text_domain")){
             function alnazer_cbk_knet_load_my_own_text_domain($mo_file, $domain ) {
 
-                if ( 'cbk-knet' === $domain && false !== strpos( $mo_file, WP_LANG_DIR . '/plugins/' ) ) {
+                if ( 'wc-cbk' === $domain && false !== strpos( $mo_file, WP_LANG_DIR . '/plugins/' ) ) {
 
                     $locale = apply_filters( 'plugin_locale', determine_locale(), $domain );
                     $mo_file = WP_PLUGIN_DIR . '/' . dirname( plugin_basename( __FILE__ ) ) . '/languages/' . $domain . '-' . $locale . '.mo';
@@ -780,7 +788,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
         if(!function_exists("alnazer_cbk_knet_load_text_domain"))
         {
             function alnazer_cbk_knet_load_text_domain() {
-                load_plugin_textdomain( 'cbk-knet', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+                load_plugin_textdomain( 'wc-cbk', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
             }
         }
 
