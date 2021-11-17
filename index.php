@@ -482,7 +482,7 @@ if(!function_exists("alnazer_init_cbk_knet")){
                 if ( is_wp_error( $response ) ) {
                     $this->error = $response->get_error_message();
                 }
-                return json_encode($response_body);
+                return json_decode($response_body);
                 /*
 
                 $curl = curl_init();
