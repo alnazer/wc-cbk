@@ -483,7 +483,36 @@ if(!function_exists("alnazer_init_cbk_knet")){
                     $this->error = $response->get_error_message();
                 }
                 return json_decode($response_body);
-                
+                /*
+
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => $this->result_url,
+                    CURLOPT_ENCODING => "",
+                    CURLOPT_FOLLOWLOCATION => 1,
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 30,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => "GET",
+                    CURLOPT_RETURNTRANSFER => 1,
+                    CURLOPT_HTTPHEADER => array(
+                        'Authorization: Basic ' .base64_encode($this->client_id. ":" . $this->client_secret),
+                        "Content-Type: application/json",
+                        "cache-control: no-cache"
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+                $this->error = curl_error($curl);
+                curl_close($curl);
+                if ($response) {
+                    if($response){
+                        $result = json_decode($response);
+                    }
+
+                }
+
+                return  $result;*/
             }
 
             /**
