@@ -1,0 +1,25 @@
+<div>
+  <div>
+      {payment_type_inputs}
+  </div>
+  {description}
+</div>
+<style>
+    #cbk_payment_method_key_field .woocommerce-input-wrapper{
+        display: grid;
+        margin-top: 0.5rem;
+        row-gap: 1rem;
+        grid-template-columns: 1rem auto;
+    }
+    #cbk_payment_method_key_field .woocommerce-input-wrapper > label{
+        display: flex;
+        gap: 1rem;
+    }
+    .wc_payment_method .payment_method_cbk_knet img {
+        height: auto;
+        max-width: 100%;
+        display: block;
+        border-radius: 3px;
+        max-height: 1.618em;
+    }
+</style>
